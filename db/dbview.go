@@ -1,4 +1,4 @@
-package main
+package dbview
 
 import (
 	"database/sql"

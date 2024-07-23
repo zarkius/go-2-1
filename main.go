@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/zarkius/db"
+	"github.com/zarkius/go-2-1/db/dbview"
 )
 
 func init() {
