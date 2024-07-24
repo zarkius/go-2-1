@@ -1,18 +1,52 @@
 package main
 
 import (
+	"database/sql"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
 
-	"github.com/zarkius/go-2-1/db/dbview"
+	_ "github.com/lib/pq" // Importa el driver de PostgreSQL
 )
 
+// User representa un usuario
+type User struct {
+	Name  string
+	Email string
+}
+
+// PageData representa los datos de la página
+type PageData struct {
+	Title   string
+	Message string
+}
+
 func init() {
-	err := dbview.ConnectDB()
+	// Configuración de la cadena de conexión
+	host := "localhost"
+	port := "5432"
+	user := "zarkius"
+	password := "1234"
+	dbname := "go"
+	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
+		"password=%s dbname=%s sslmode=disable",
+		host, port, user, password, dbname)
+
+	// Conexión a la base de datos
+	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer db.Close()
+
+	// Verificar la conexión
+	err = db.Ping()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Conectado exitosamente a la base de datos")
 }
 
 func main() {
@@ -51,7 +85,7 @@ func usuariosHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 		// obtiene los usuarios de la base de datos
-		users, err := getUsers()
+		users, err := getUsers() //TODO
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -65,11 +99,11 @@ func usuariosHandler(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 		// crea un nuevo usuario
-		err := createUser(r)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
+		//err := createUser(r) // TODO
+		//if err != nil {
+		//	http.Error(w, err.Error(), http.StatusInternalServerError)
+		//	return
+		//}
 
 		// redirige al usuario a la lista de usuarios
 		http.Redirect(w, r, "/usuarios", http.StatusSeeOther)
@@ -79,44 +113,7 @@ func usuariosHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func createUser(r *http.Request) error {
-	// obtiene los datos del formulario
-	err := r.ParseForm()
-	if err != nil {
-		return err
-	}
-
-	// crea un nuevo usuario con los datos del formulario
-	user := User{
-		Name:  r.Form.Get("name"),
-		Email: r.Form.Get("email"),
-	}
-
-	// guarda el usuario en la base de datos
-	err = saveUser(user)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func getUsers() ([]User, error) {
-	// obtiene los usuarios de la base de datos
-	users, err := db.GetUsers()
-	if err != nil {
-		return nil, err
-	}
-
-	return users, nil
-}
-
-func saveUser(user User) error {
-	// guarda el usuario en la base de datos
-	err := db.SaveUser(user)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	print("Obteniendo usuarios...")
+	return []User{}, nil
 }
