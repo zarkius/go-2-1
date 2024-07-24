@@ -7,7 +7,7 @@ import (
 	"log"
 	"net/http"
 
-	_ "github.com/lib/pq" // Importa el driver de PostgreSQL
+	_ "github.com/lib/pq"
 )
 
 // User representa un usuario
