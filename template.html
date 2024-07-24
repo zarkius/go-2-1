@@ -5,7 +5,10 @@
 </head>
 <body>
     <h1>{{.Message}}</h1>
-    <p>{{.Data}}</p>
+    <form action="/usuarios" method="post">
+        <input type="text" name="nombre" placeholder="nombre">
+        <input type="text" name="apellido" placeholder="apellido">
+        <input type="submit" value="Submit" />
 </body>
 </html>
 
